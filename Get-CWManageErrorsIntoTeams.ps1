@@ -29,6 +29,8 @@
     VERSION HISTORY
         2021.07.02 - Sanitized script for general use
 
+        2021.08.27 - Updated URL for $ticketEntryURl to v2021_2
+
     TO DO:
 
 #>
@@ -63,14 +65,14 @@ $emailsuffix = '*@companyemail.com' #example '*@gmail.com' or '*@mspcompany.com'
 
 #if link breaks, change "v2021_1" in the following link to the current version and use Tinyurl.com to shorten it: https://na.myconnectwise.net/v2021_1/ConnectWise.aspx?locale=en_US&routeTo=ServiceFV
 #make sure variable has ?srRecID= after the tinyURL
-$ticketEntryURl = 'https://tinyurl.com/eacmw6tu?srRecID='
+$ticketEntryURl = 'https://tinyurl.com/9dxj9r25?srRecID='
 
 #if link breaks, check https://developer.connectwise.com to see what the new URL is for the version and use Tinyurl.com to shorten it 
 #make sure variable has ?RecID= after the tinyURL
 #Current is (fill in your own company name): https://api-na.myconnectwise.net/v4_6_release/services/system_io/router/openrecord.rails?locale=en_US&companyName=PUTYOURCOMPANYNAMEHERE&recordType=TimeEntryFV
 $timeEntryURL = 'makeyourowntinyurlwithyourcompanynameandputithere?RecID='   
 
-#Used to detect if there were no issues found in any function.
+#Used to detect if there were no issues found in any function. Leave this as true.
 $noIssuesReported = $true
 
 <# /Script Variables #>
