@@ -31,6 +31,8 @@
 
         2021.08.27 - Updated URL for $ticketEntryURl to v2021_2
 
+        2022.01.17 - Fixed page size for $AgreementsCompanyID
+
     TO DO:
 
 #>
@@ -114,7 +116,7 @@ Function Get-Problems([parameter(Mandatory = $true)]$Type) {
     $uniqueMembers = $ticketSearch.member.identifier | Sort-Object | Get-Unique
   }
   elseif ($Type -eq 'MissingAgreement-Time') {
-    $AgreementsCompanyID = (Get-CWMAgreement).company.id | Sort-Object | Get-Unique
+    $AgreementsCompanyID = (Get-CWMAgreement -pageSize 1000).company.id | Sort-Object | Get-Unique
     $ticketSearch = get-CWMTimeEntry "agreement/name = null and status != `"Billed`" and dateEntered > [$ticketDate]" -pageSize 1000
     #filter to IGNORE entries for companies that don't have an agreement
     $ticketSearch = $ticketSearch | Where-Object { ($_.company.id -in $AgreementsCompanyID ) }
