@@ -33,6 +33,8 @@
 
         2022.01.17 - Fixed page size for $AgreementsCompanyID
 
+        2022.01.25 - Fix Missing Agreement to only report on active agreements 
+
     TO DO:
 
 #>
@@ -116,10 +118,10 @@ Function Get-Problems([parameter(Mandatory = $true)]$Type) {
     $uniqueMembers = $ticketSearch.member.identifier | Sort-Object | Get-Unique
   }
   elseif ($Type -eq 'MissingAgreement-Time') {
-    $AgreementsCompanyID = (Get-CWMAgreement -pageSize 1000).company.id | Sort-Object | Get-Unique
+    $AgreementsCompanyID = (Get-CWMAgreement "agreementstatus = `"Active`"" -pageSize 1000).company.id | Sort-Object | Get-Unique 
     $ticketSearch = get-CWMTimeEntry "agreement/name = null and status != `"Billed`" and dateEntered > [$ticketDate]" -pageSize 1000
     #filter to IGNORE entries for companies that don't have an agreement
-    $ticketSearch = $ticketSearch | Where-Object { ($_.company.id -in $AgreementsCompanyID ) }
+    $ticketSearch = $ticketSearch | Where-Object { ($_.company.id -in $AgreementsCompanyID) }
     $messageTitle = "$date - Missing Agreement"
     $uniqueMembers = $ticketSearch.member.identifier | Sort-Object | Get-Unique
   }
