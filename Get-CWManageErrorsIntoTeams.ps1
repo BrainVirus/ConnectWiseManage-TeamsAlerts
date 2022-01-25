@@ -34,6 +34,7 @@
         2022.01.17 - Fixed page size for $AgreementsCompanyID
 
         2022.01.25 - Fix Missing Agreement to only report on active agreements 
+                     Updated URL for $ticketEntryURl to v2021_3
 
     TO DO:
 
@@ -69,7 +70,7 @@ $emailsuffix = '*@companyemail.com' #example '*@gmail.com' or '*@mspcompany.com'
 
 #if link breaks, change "v2021_1" in the following link to the current version and use Tinyurl.com to shorten it: https://na.myconnectwise.net/v2021_1/ConnectWise.aspx?locale=en_US&routeTo=ServiceFV
 #make sure variable has ?srRecID= after the tinyURL
-$ticketEntryURl = 'https://tinyurl.com/9dxj9r25?srRecID='
+$ticketEntryURl = 'https://tinyurl.com/mr3cbpf4?srRecID='
 
 #if link breaks, check https://developer.connectwise.com to see what the new URL is for the version and use Tinyurl.com to shorten it 
 #make sure variable has ?RecID= after the tinyURL
