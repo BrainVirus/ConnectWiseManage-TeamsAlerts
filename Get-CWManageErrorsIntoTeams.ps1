@@ -36,6 +36,9 @@
         2022.01.25 - Fix Missing Agreement to only report on active agreements 
                      Updated URL for $ticketEntryURl to v2021_3
 
+        2022.02.09 - Add "-condition" to get-CWMTimeEntry uses. Was throwing errors when
+                     ran without it when using the latest ConnectWiseManageAPI (0.4.7.0)          
+
     TO DO:
 
 #>
@@ -102,32 +105,32 @@ Function Get-Problems([parameter(Mandatory = $true)]$Type) {
 
   #Set Search, message title, and member search based on which search we are doing.
   if ($Type -eq 'MustChange-Time') {
-    $ticketSearch = get-CWMTimeEntry "workType/name = `"MUST CHANGE!!!!`" and status != `"Billed`" and dateEntered > [$ticketDate]" -pageSize 1000
+    $ticketSearch = get-CWMTimeEntry -condition "workType/name = `"MUST CHANGE!!!!`" and status != `"Billed`" and dateEntered > [$ticketDate]" -pageSize 1000
     $messageTitle = "$date - Time Work Type is Must Change"
     $uniqueMembers = $ticketSearch.member.identifier | Sort-Object | Get-Unique
   }
   elseif ($Type -eq 'NonBillable-Time') {
-    $ticketSearch = get-CWMTimeEntry "(workType/name = `"Admin`" or workType/name = `"Communication`" or workType/name = `"PTO`" or workType/name = `"RMM Agent`" or workType/name = `"Streamline IT`" ) and billableoption = `"Billable`" and status != `"Billed`" and dateEntered > [$ticketDate]" -pageSize 1000
+    $ticketSearch = get-CWMTimeEntry -condition "(workType/name = `"Admin`" or workType/name = `"Communication`" or workType/name = `"PTO`" or workType/name = `"RMM Agent`" or workType/name = `"Streamline IT`" ) and billableoption = `"Billable`" and status != `"Billed`" and dateEntered > [$ticketDate]" -pageSize 1000
     #filter to IGNORE billable RMM agent Work types for specific clients. Works, just commented out unless you need it. Make sure to change the "Company Name"
     #$ticketSearch = $ticketSearch | Where-Object { !($_.company.identifier -like "COMPANY NAME" -and $_.workType.Name -like "RMM Agent") }
     $messageTitle = "$date - Non-Billable Time Flagged as Billable"
     $uniqueMembers = $ticketSearch.member.identifier | Sort-Object | Get-Unique
   }
   elseif ($Type -eq 'Billable-Time') {
-    $ticketSearch = get-CWMTimeEntry "(workType/name = `"After Hours Project`" or workType/name = `"Emergency/Weekend`" or workType/name = `"Onsite`" or workType/name = `"Remote`" or workType/name = `"Travel`")  and billableoption = `"DoNotBill`" and status != `"Billed`" and dateEntered > [$ticketDate]" -pageSize 1000
+    $ticketSearch = get-CWMTimeEntry -condition "(workType/name = `"After Hours Project`" or workType/name = `"Emergency/Weekend`" or workType/name = `"Onsite`" or workType/name = `"Remote`" or workType/name = `"Travel`")  and billableoption = `"DoNotBill`" and status != `"Billed`" and dateEntered > [$ticketDate]" -pageSize 1000
     $messageTitle = "$date - Billable Time Flagged as Non-Billable"
     $uniqueMembers = $ticketSearch.member.identifier | Sort-Object | Get-Unique
   }
   elseif ($Type -eq 'MissingAgreement-Time') {
-    $AgreementsCompanyID = (Get-CWMAgreement "agreementstatus = `"Active`"" -pageSize 1000).company.id | Sort-Object | Get-Unique 
-    $ticketSearch = get-CWMTimeEntry "agreement/name = null and status != `"Billed`" and dateEntered > [$ticketDate]" -pageSize 1000
+    $AgreementsCompanyID = (Get-CWMAgreement -condition "agreementstatus = `"Active`"" -pageSize 1000).company.id | Sort-Object | Get-Unique 
+    $ticketSearch = get-CWMTimeEntry -condition "agreement/name = null and status != `"Billed`" and dateEntered > [$ticketDate]" -pageSize 1000
     #filter to IGNORE entries for companies that don't have an agreement
     $ticketSearch = $ticketSearch | Where-Object { ($_.company.id -in $AgreementsCompanyID) }
     $messageTitle = "$date - Missing Agreement"
     $uniqueMembers = $ticketSearch.member.identifier | Sort-Object | Get-Unique
   }
   elseif ($Type -eq '15MinuteCommunicationAlert-Time') {
-    $ticketSearch = get-CWMTimeEntry "workType/name = `"Communication`" and actualHours >= 0.25 and status != `"Billed`" and dateEntered > [$ticketDate]" -pageSize 1000
+    $ticketSearch = get-CWMTimeEntry -condition "workType/name = `"Communication`" and actualHours >= 0.25 and status != `"Billed`" and dateEntered > [$ticketDate]" -pageSize 1000
     $messageTitle = "$date - Communication Time Entry Over 15 Minutes"
     $uniqueMembers = $ticketSearch.member.identifier | Sort-Object | Get-Unique
   }
